@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  email   String   @unique
+  name    String?
+  password String
+  contactNo String
+  gender    String
+  school    String
+  comp      Comp[] @relation(fields: [compIds], references: [id])
+  compIds   String[] @db.ObjectId
+  
+}
+
+model Comp {
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  author      User       @relation(fields: [authorId], references: [id])
+  authorId    String     @db.ObjectId
+  descript    String 
+  prize       String
+  banner       String //image
+  reqMembers    String
+  remMembers    String
+  selectedMembers User[] @relation(fields: [userIds], references: [id])
+  userRequested  User[]  @relation(fields: [userIds], references: [id])
+  userIds       String[]   @db.ObjectId
+  rounds   Round[] @relation(fields: [roundIds], references: [id])
+  roundIds    String[]
+}
+
+
+model Round{
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  comp      Comp @relation(fields: [compId], references: [id])
+  compId   String @db.ObjectId
+  startDate  Date
+  endDate    Date
+  descript    String
+  }
+
+
+
+
+
